@@ -1,0 +1,4 @@
+
+".\.git\objects\pack\pack-1a416eb3244ef2f95caf99a06abbb54e2b8132c2.pack"
+".\demo\node_modules\@next\.swc-win32-x64-msvc-0JG86oBz\next-swc.win32-x64-msvc.node"
+".\demo\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node"
