@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Clock, ExternalLink } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
@@ -44,7 +44,7 @@ export function NewsCard({
 
   return (
     <Card 
-      className="group flex flex-col hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+      className="group hover:shadow-lg transition-shadow duration-200 cursor-pointer"
       onClick={handleClick}
     >
       <div className="aspect-video relative overflow-hidden rounded-t-lg">
@@ -57,8 +57,7 @@ export function NewsCard({
           {category}
         </Badge>
       </div>
-      {/* 🔹 flex-grow를 추가하여 내용이 남은 공간을 모두 차지하도록 설정 */}
-      <CardHeader className="pb-2 flex-grow">
+      <CardHeader className="pb-2">
         <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
           {title}
         </CardTitle>
@@ -66,9 +65,8 @@ export function NewsCard({
           {description}
         </CardDescription>
       </CardHeader>
-      {/* 🔹 CardContent를 CardFooter로 변경하여 의미를 명확화 */}
-      <CardFooter className="pt-0">
-        <div className="flex items-center justify-between text-sm text-muted-foreground w-full">
+      <CardContent className="pt-0">
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4" />
             <span>{formatDate(publishedAt)}</span>
@@ -78,7 +76,7 @@ export function NewsCard({
             <ExternalLink className="w-4 h-4" />
           </div>
         </div>
-      </CardFooter>
+      </CardContent>
     </Card>
   );
 }

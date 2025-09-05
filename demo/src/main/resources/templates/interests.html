@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관심사 선택</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .interests-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .interest-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .interest-item {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        .interest-item:hover {
+            border-color: #007bff;
+            background-color: #f8f9fa;
+        }
+        .interest-item.selected {
+            border-color: #007bff;
+            background-color: #e3f2fd;
+            color: #0056b3;
+        }
+        .interest-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .interest-label {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        .btn:disabled {
+            background-color: #d6d8db;
+            cursor: not-allowed;
+        }
+        .selected-count {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .title-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title-section h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .title-section p {
+            color: #666;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="interests-container">
+        <div class="title-section">
+            <h1>관심사를 선택해주세요</h1>
+            <p>관심사를 선택하시면 맞춤형 RSS 피드를 제공해드립니다.</p>
+        </div>
+
+        <form id="interestsForm">
+            <div class="interest-grid">
+                <div class="interest-item" data-interest="economy">
+                    <span class="interest-icon">💼</span>
+                    <div class="interest-label">경제</div>
+                    <input type="checkbox" name="interests" value="economy" style="display: none;">
+                </div>
+                <div class="interest-item" data-interest="science">
+                    <span class="interest-icon">🔬</span>
+                    <div class="interest-label">과학</div>
+                    <input type="checkbox" name="interests" value="science" style="display: none;">
+                </div>
+                <div class="interest-item" data-interest="art">
+                    <span class="interest-icon">🎨</span>
+                    <div class="interest-label">미술</div>
+                    <input type="checkbox" name="interests" value="art" style="display: none;">
+                </div>
+                <div class="interest-item" data-interest="technology">
+                    <span class="interest-icon">💻</span>
+                    <div class="interest-label">기술</div>
+                    <input type="checkbox" name="interests" value="technology" style="display: none;">
+                </div>
+                <div class="interest-item" data-interest="sports">
+                    <span class="interest-icon">⚽</span>
+                    <div class="interest-label">스포츠</div>
+                    <input type="checkbox" name="interests" value="sports" style="display: none;">
+                </div>
+                <div class="interest-item" data-interest="health">
+                    <span class="interest-icon">🏥</span>
+                    <div class="interest-label">건강</div>
+                    <input type="checkbox" name="interests" value="health" style="display: none;">
+                </div>
+                <div class="interest-item" data-interest="travel">
+                    <span class="interest-icon">✈️</span>
+                    <div class="interest-label">여행</div>
+                    <input type="checkbox" name="interests" value="travel" style="display: none;">
+                </div>
+                <div class="interest-item" data-interest="food">
+                    <span class="interest-icon">🍽️</span>
+                    <div class="interest-label">음식</div>
+                    <input type="checkbox" name="interests" value="food" style="display: none;">
+                </div>
+                <div class="interest-item" data-interest="music">
+                    <span class="interest-icon">🎵</span>
+                    <div class="interest-label">음악</div>
+                    <input type="checkbox" name="interests" value="music" style="display: none;">
+                </div>
+                <div class="interest-item" data-interest="books">
+                    <span class="interest-icon">📚</span>
+                    <div class="interest-label">도서</div>
+                    <input type="checkbox" name="interests" value="books" style="display: none;">
+                </div>
+                <div class="interest-item" data-interest="movies">
+                    <span class="interest-icon">🎬</span>
+                    <div class="interest-label">영화</div>
+                    <input type="checkbox" name="interests" value="movies" style="display: none;">
+                </div>
+                <div class="interest-item" data-interest="fashion">
+                    <span class="interest-icon">👗</span>
+                    <div class="interest-label">패션</div>
+                    <input type="checkbox" name="interests" value="fashion" style="display: none;">
+                </div>
+            </div>
+
+            <div class="selected-count">
+                <span id="selectedCount">선택된 관심사: 0개</span>
+            </div>
+
+            <div class="btn-group">
+                <a href="/" class="btn btn-secondary">나중에 설정</a>
+                <button type="submit" class="btn btn-primary" id="submitBtn" disabled>완료</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const interestItems = document.querySelectorAll('.interest-item');
+            const selectedCount = document.getElementById('selectedCount');
+            const submitBtn = document.getElementById('submitBtn');
+            const form = document.getElementById('interestsForm');
+            let selectedInterests = [];
+
+            // 관심사 선택/해제 처리
+            interestItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const interest = this.dataset.interest;
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+
+                    if (this.classList.contains('selected')) {
+                        // 선택 해제
+                        this.classList.remove('selected');
+                        checkbox.checked = false;
+                        selectedInterests = selectedInterests.filter(i => i !== interest);
+                    } else {
+                        // 선택
+                        this.classList.add('selected');
+                        checkbox.checked = true;
+                        selectedInterests.push(interest);
+                    }
+
+                    updateUI();
+                });
+            });
+
+            // UI 업데이트
+            function updateUI() {
+                selectedCount.textContent = `선택된 관심사: ${selectedInterests.length}개`;
+                submitBtn.disabled = selectedInterests.length === 0;
+
+                if (selectedInterests.length > 0) {
+                    submitBtn.textContent = `완료 (${selectedInterests.length}개 선택)`;
+                } else {
+                    submitBtn.textContent = '완료';
+                }
+            }
+
+            // 폼 제출 처리
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                if (selectedInterests.length === 0) {
+                    alert('최소 하나 이상의 관심사를 선택해주세요.');
+                    return;
+                }
+
+                // AJAX로 관심사 저장
+                fetch('/api/interests', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(selectedInterests)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('관심사가 저장되었습니다.');
+                        window.location.href = '/';
+                    } else {
+                        alert('관심사 저장에 실패했습니다: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('관심사 저장 중 오류가 발생했습니다.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

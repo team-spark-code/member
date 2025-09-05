@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>직업 관심사 선택</title>
+    <style>
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .interest-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .interest-item {
+            display: flex;
+            align-items: center;
+            width: 32%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .interest-item:hover {
+            border-color: #007bff;
+            background-color: #f8f9ff;
+        }
+        .interest-item.selected {
+            border-color: #007bff;
+            background-color: #e7f1ff;
+        }
+        .interest-item input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        .interest-item label {
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .save-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .save-btn:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        .save-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+        }
+        .message.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>직업 선택</h2>
+        <div class="interest-group">
+            <div class="interest-item" data-interest="개발자">
+                <input type="checkbox" id="developer" name="interest" value="개발자">
+                <label for="developer">개발자</label>
+            </div>
+            <div class="interest-item" data-interest="기획자">
+                <input type="checkbox" id="planner" name="interest" value="기획자">
+                <label for="planner">기획자</label>
+            </div>
+            <div class="interest-item" data-interest="대학생">
+                <input type="checkbox" id="student" name="interest" value="대학생">
+                <label for="student">대학생</label>
+            </div>
+            <div class="interest-item" data-interest="연구원/교수">
+                <input type="checkbox" id="researcher" name="interest" value="연구원/교수">
+                <label for="researcher">연구원/교수</label>
+            </div>
+            <div class="interest-item" data-interest="정책작성자">
+                <input type="checkbox" id="policy" name="interest" value="정책작성자">
+                <label for="policy">정책작성자</label>
+            </div>
+            <div class="interest-item" data-interest="일반인">
+                <input type="checkbox" id="general" name="interest" value="일반인">
+                <label for="general">일반인</label>
+            </div>
+        </div>
+        <h2 style="margin-top:40px;">관심 있는 AI기업 선택</h2>
+        <div class="interest-group" id="ai-company-group">
+            <div class="interest-item" data-company="OPENAI">
+                <input type="checkbox" id="openai" name="aiCompany" value="OPENAI">
+                <label for="openai">OPENAI</label>
+            </div>
+            <div class="interest-item" data-company="GEMINI">
+                <input type="checkbox" id="gemini" name="aiCompany" value="GEMINI">
+                <label for="gemini">GEMINI</label>
+            </div>
+            <div class="interest-item" data-company="GOOGLE">
+                <input type="checkbox" id="google" name="aiCompany" value="GOOGLE">
+                <label for="google">GOOGLE</label>
+            </div>
+            <div class="interest-item" data-company="MICROSOFT">
+                <input type="checkbox" id="microsoft" name="aiCompany" value="MICROSOFT">
+                <label for="microsoft">MICROSOFT</label>
+            </div>
+            <div class="interest-item" data-company="META">
+                <input type="checkbox" id="meta" name="aiCompany" value="META">
+                <label for="meta">META</label>
+            </div>
+            <div class="interest-item" data-company="AMAZON">
+                <input type="checkbox" id="amazon" name="aiCompany" value="AMAZON">
+                <label for="amazon">AMAZON</label>
+            </div>
+        </div>
+        <h2 style="margin-top:40px;">관심 있는 분야 선택</h2>
+        <div class="interest-group" id="ai-field-group">
+            <div class="interest-item" data-field="딥러닝">
+                <input type="checkbox" id="deep" name="aiField" value="딥러닝">
+                <label for="deep">딥러닝</label>
+            </div>
+            <div class="interest-item" data-field="머신러닝">
+                <input type="checkbox" id="ml" name="aiField" value="머신러닝">
+                <label for="ml">머신러닝</label>
+            </div>
+            <div class="interest-item" data-field="LLM">
+                <input type="checkbox" id="llm" name="aiField" value="LLM">
+                <label for="llm">LLM</label>
+            </div>
+            <div class="interest-item" data-field="파인튜닝">
+                <input type="checkbox" id="finetune" name="aiField" value="파인튜닝">
+                <label for="finetune">파인튜닝</label>
+            </div>
+            <div class="interest-item" data-field="데이터분석">
+                <input type="checkbox" id="data" name="aiField" value="데이터분석">
+                <label for="data">데이터분석</label>
+            </div>
+            <div class="interest-item" data-field="자연어처리">
+                <input type="checkbox" id="nlp" name="aiField" value="자연어처리">
+                <label for="nlp">자연어처리</label>
+            </div>
+            <div class="interest-item" data-field="컴퓨터비전">
+                <input type="checkbox" id="cv" name="aiField" value="컴퓨터비전">
+                <label for="cv">컴퓨터비전</label>
+            </div>
+            <div class="interest-item" data-field="추천시스템">
+                <input type="checkbox" id="rec" name="aiField" value="추천시스템">
+                <label for="rec">추천시스템</label>
+            </div>
+            <div class="interest-item" data-field="생성AI">
+                <input type="checkbox" id="genai" name="aiField" value="생성AI">
+                <label for="genai">생성AI</label>
+            </div>
+            <div class="interest-item" data-field="강화학습">
+                <input type="checkbox" id="rl" name="aiField" value="강화학습">
+                <label for="rl">강화학습</label>
+            </div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="save-btn" id="saveBtn" disabled>저장</button>
+            <button class="save-btn" id="goMainBtn" type="button">메인페이지로 이동</button>
+        </div>
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        let selectedInterest = '';
+        let selectedCompany = '';
+        let selectedField = '';
+        const checkboxes = document.querySelectorAll('input[name="interest"]');
+        const interestItems = document.querySelectorAll('.interest-item[data-interest]');
+        const companyCheckboxes = document.querySelectorAll('input[name="aiCompany"]');
+        const companyItems = document.querySelectorAll('.interest-item[data-company]');
+        const fieldCheckboxes = document.querySelectorAll('input[name="aiField"]');
+        const fieldItems = document.querySelectorAll('.interest-item[data-field]');
+        const saveBtn = document.getElementById('saveBtn');
+        const messageDiv = document.getElementById('message');
+
+        // 기존 직업/AI기업/분야 불러오기 (각각의 API로 분리)
+        window.addEventListener('load', function() {
+            // 직업
+            fetch('/api/job-interest', {
+                method: 'GET',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.interest) selectedInterest = data.interest;
+                updateUI();
+            });
+            // AI기업
+            fetch('/api/ai-company', {
+                method: 'GET',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.aiCompany) selectedCompany = data.aiCompany;
+                updateUI();
+            });
+            // 관심분야
+            fetch('/api/ai-field', {
+                method: 'GET',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.aiField) selectedField = data.aiField;
+                updateUI();
+            });
+        });
+        // 직업 관심사 체크박스 (하나만 선택)
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    checkboxes.forEach(cb => { if (cb !== this) cb.checked = false; });
+                    selectedInterest = this.value;
+                } else {
+                    selectedInterest = '';
+                }
+                updateUI();
+            });
+        });
+        // 직업 관심사 아이템 클릭
+        interestItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.type !== 'checkbox') {
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+        // AI기업 체크박스 (하나만 선택)
+        companyCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    companyCheckboxes.forEach(cb => { if (cb !== this) cb.checked = false; });
+                    selectedCompany = this.value;
+                } else {
+                    selectedCompany = '';
+                }
+                updateUI();
+            });
+        });
+        // AI기업 아이템 클릭
+        companyItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.type !== 'checkbox') {
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+        // 분야 체크박스 (하나만 선택)
+        fieldCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    fieldCheckboxes.forEach(cb => { if (cb !== this) cb.checked = false; });
+                    selectedField = this.value;
+                } else {
+                    selectedField = '';
+                }
+                updateUI();
+            });
+        });
+        // 분야 아이템 클릭
+        fieldItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.type !== 'checkbox') {
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+        // UI 업데이트 함수
+        function updateUI() {
+            // 직업 관심사
+            interestItems.forEach(item => {
+                const interest = item.dataset.interest;
+                if (interest === selectedInterest) {
+                    item.classList.add('selected');
+                    item.querySelector('input').checked = true;
+                } else {
+                    item.classList.remove('selected');
+                    item.querySelector('input').checked = false;
+                }
+            });
+            // AI기업
+            companyItems.forEach(item => {
+                const company = item.dataset.company;
+                if (company === selectedCompany) {
+                    item.classList.add('selected');
+                    item.querySelector('input').checked = true;
+                } else {
+                    item.classList.remove('selected');
+                    item.querySelector('input').checked = false;
+                }
+            });
+            // 분야
+            fieldItems.forEach(item => {
+                const field = item.dataset.field;
+                if (field === selectedField) {
+                    item.classList.add('selected');
+                    item.querySelector('input').checked = true;
+                } else {
+                    item.classList.remove('selected');
+                    item.querySelector('input').checked = false;
+                }
+            });
+            // 저장 버튼 활성화/비활성화 (셋 다 선택해야 활성화)
+            saveBtn.disabled = !(selectedInterest && selectedCompany && selectedField);
+        }
+        // 저장 버튼 클릭 이벤트
+        saveBtn.addEventListener('click', function() {
+            if (!(selectedInterest && selectedCompany && selectedField)) return;
+            this.disabled = true;
+            this.textContent = '저장 중...';
+            // 직업 저장
+            fetch('/api/job-interest', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ interest: selectedInterest })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('직업 저장 실패');
+                // AI기업 저장
+                return fetch('/api/ai-company', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ aiCompany: selectedCompany })
+                });
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('AI기업 저장 실패');
+                // 관심분야 저장
+                return fetch('/api/ai-field', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ aiField: selectedField })
+                });
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('관심분야 저장 실패');
+                showMessage('선택한 정보가 저장되었습니다!', 'success');
+            })
+            .catch(error => {
+                console.error('저장 오류:', error);
+                showMessage('저장 중 오류가 발생했습니다.', 'error');
+            })
+            .finally(() => {
+                this.disabled = false;
+                this.textContent = '저장';
+            });
+        });
+        // 메인페이지로 이동 버튼 클릭 이벤트
+        document.getElementById('goMainBtn').addEventListener('click', function() {
+            window.location.href = '/';
+        });
+        // 메시지 표시 함수
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

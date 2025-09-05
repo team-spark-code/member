@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Card, CardContent, CardDescription, CardHeader } from "./ui/card";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -17,88 +17,37 @@ interface SignupFormData {
   fullName: string;
   phoneNumber: string;
   agreeToTerms: boolean;
+  agreeToMarketing: boolean;
 }
 
-// 🔹 Props 인터페이스에 onSignupSuccess 추가
 interface SignupPageProps {
   onBack: () => void;
-  onSignupSuccess: () => void;
 }
 
-export function SignupPage({ onBack, onSignupSuccess }: SignupPageProps) {
+export function SignupPage({ onBack }: SignupPageProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const {
+    register,
     handleSubmit,
     watch,
-    control,
-    formState: { errors, isDirty }
-  } = useForm<SignupFormData>({
-    mode: "onChange",
-    defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      fullName: "",
-      phoneNumber: "",
-      agreeToTerms: false
-    }
-  });
+    formState: { errors }
+  } = useForm<SignupFormData>();
 
-  const formValues = watch();
-  const { email, password, confirmPassword, fullName, phoneNumber, agreeToTerms } = formValues;
-
-  const fieldValidationStatus = useMemo(() => {
-    return {
-      fullName: fullName && fullName.length >= 2,
-      email: email && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email),
-      phoneNumber: !phoneNumber || /^01[0-9]-?[0-9]{4}-?[0-9]{4}$/.test(phoneNumber),
-      password: password && password.length >= 8,
-      confirmPassword: confirmPassword && confirmPassword === password,
-      agreeToTerms: agreeToTerms
-    };
-  }, [fullName, email, phoneNumber, password, confirmPassword, agreeToTerms]);
-
-  const isFormValid = useMemo(() => {
-    return Object.values(fieldValidationStatus).every(Boolean);
-  }, [fieldValidationStatus]);
-
-  const formCompletionPercentage = useMemo(() => {
-    const requiredFields = ['fullName', 'email', 'password', 'confirmPassword', 'agreeToTerms'];
-    const completedFields = requiredFields.filter(field => fieldValidationStatus[field as keyof typeof fieldValidationStatus]);
-    return Math.round((completedFields.length / requiredFields.length) * 100);
-  }, [fieldValidationStatus]);
+  const password = watch("password");
 
   const onSubmit = async (data: SignupFormData) => {
     setIsLoading(true);
-
-    try {
-      const response = await fetch('http://localhost:8080/api/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        alert("회원가입이 완료되었습니다!");
-        // 🔹 회원가입 성공 시 onSignupSuccess 콜백 호출
-        onSignupSuccess();
-      } else {
-        alert(result.message || "회원가입 중 오류가 발생했습니다.");
-      }
-    } catch (error) {
-      console.error('회원가입 오류:', error);
-      alert("서버 연결 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-    } finally {
+    // 실제 구현에서는 여기서 API 호출
+    console.log("회원가입 데이터:", data);
+    
+    // 모의 지연
+    setTimeout(() => {
       setIsLoading(false);
-    }
+      alert("회원가입이 완료되었습니다!");
+    }, 2000);
   };
 
   const handleSocialLogin = (provider: string) => {
@@ -148,20 +97,6 @@ export function SignupPage({ onBack, onSignupSuccess }: SignupPageProps) {
             <CardDescription>
               계정을 생성하여 뉴스 크롤러의 모든 기능을 이용해보세요
             </CardDescription>
-            {isDirty && (
-              <div className="space-y-2">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">폼 완성도</span>
-                  <span className="font-medium">{formCompletionPercentage}%</span>
-                </div>
-                <div className="w-full bg-muted rounded-full h-2">
-                  <div
-                    className="bg-primary h-2 rounded-full transition-all duration-300 ease-out"
-                    style={{ width: `${formCompletionPercentage}%` }}
-                  />
-                </div>
-              </div>
-            )}
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Social Login */}
@@ -201,24 +136,17 @@ export function SignupPage({ onBack, onSignupSuccess }: SignupPageProps) {
                 <Label htmlFor="fullName">이름 *</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Controller
-                    name="fullName"
-                    control={control}
-                    rules={{
+                  <Input
+                    id="fullName"
+                    placeholder="홍길동"
+                    className="pl-10"
+                    {...register("fullName", {
                       required: "이름을 입력해주세요",
                       minLength: {
                         value: 2,
                         message: "이름은 2자 이상이어야 합니다"
                       }
-                    }}
-                    render={({ field }) => (
-                      <Input
-                        id="fullName"
-                        placeholder="홍길동"
-                        className="pl-10"
-                        {...field}
-                      />
-                    )}
+                    })}
                   />
                 </div>
                 {errors.fullName && (
@@ -233,25 +161,18 @@ export function SignupPage({ onBack, onSignupSuccess }: SignupPageProps) {
                 <Label htmlFor="email">이메일 *</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Controller
-                    name="email"
-                    control={control}
-                    rules={{
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="example@domain.com"
+                    className="pl-10"
+                    {...register("email", {
                       required: "이메일을 입력해주세요",
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                         message: "올바른 이메일 형식을 입력해주세요"
                       }
-                    }}
-                    render={({ field }) => (
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="example@domain.com"
-                        className="pl-10"
-                        {...field}
-                      />
-                    )}
+                    })}
                   />
                 </div>
                 {errors.email && (
@@ -266,23 +187,16 @@ export function SignupPage({ onBack, onSignupSuccess }: SignupPageProps) {
                 <Label htmlFor="phoneNumber">전화번호</Label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Controller
-                    name="phoneNumber"
-                    control={control}
-                    rules={{
+                  <Input
+                    id="phoneNumber"
+                    placeholder="010-1234-5678"
+                    className="pl-10"
+                    {...register("phoneNumber", {
                       pattern: {
                         value: /^01[0-9]-?[0-9]{4}-?[0-9]{4}$/,
                         message: "올바른 전화번호 형식을 입력해주세요"
                       }
-                    }}
-                    render={({ field }) => (
-                      <Input
-                        id="phoneNumber"
-                        placeholder="010-1234-5678"
-                        className="pl-10"
-                        {...field}
-                      />
-                    )}
+                    })}
                   />
                 </div>
                 {errors.phoneNumber && (
@@ -297,25 +211,18 @@ export function SignupPage({ onBack, onSignupSuccess }: SignupPageProps) {
                 <Label htmlFor="password">비밀번호 *</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Controller
-                    name="password"
-                    control={control}
-                    rules={{
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="8자 이상의 비밀번호"
+                    className="pl-10 pr-10"
+                    {...register("password", {
                       required: "비밀번호를 입력해주세요",
                       minLength: {
                         value: 8,
                         message: "비밀번호는 8자 이상이어야 합니다"
                       }
-                    }}
-                    render={({ field }) => (
-                      <Input
-                        id="password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="8자 이상의 비밀번호"
-                        className="pl-10 pr-10"
-                        {...field}
-                      />
-                    )}
+                    })}
                   />
                   <Button
                     type="button"
@@ -339,21 +246,15 @@ export function SignupPage({ onBack, onSignupSuccess }: SignupPageProps) {
                 <Label htmlFor="confirmPassword">비밀번호 확인 *</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Controller
-                    name="confirmPassword"
-                    control={control}
-                    rules={{
-                      required: "비밀번호 확인을 입력해주세요"
-                    }}
-                    render={({ field }) => (
-                      <Input
-                        id="confirmPassword"
-                        type={showConfirmPassword ? "text" : "password"}
-                        placeholder="비밀번호를 다시 입력하세요"
-                        className="pl-10 pr-10"
-                        {...field}
-                      />
-                    )}
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="비밀번호를 다시 입력하세요"
+                    className="pl-10 pr-10"
+                    {...register("confirmPassword", {
+                      required: "비밀번호 확인을 입력해주세요",
+                      validate: value => value === password || "비밀번호가 일치하지 않습니다"
+                    })}
                   />
                   <Button
                     type="button"
@@ -370,35 +271,28 @@ export function SignupPage({ onBack, onSignupSuccess }: SignupPageProps) {
                     <AlertDescription>{errors.confirmPassword.message}</AlertDescription>
                   </Alert>
                 )}
-                {confirmPassword && !fieldValidationStatus.confirmPassword && (
-                  <Alert variant="destructive">
-                    <AlertDescription>비밀번호가 일치하지 않습니다</AlertDescription>
-                  </Alert>
-                )}
-                {confirmPassword && fieldValidationStatus.confirmPassword && (
-                  <Alert>
-                    <AlertDescription className="text-green-600">비밀번호가 일치합니다</AlertDescription>
-                  </Alert>
-                )}
               </div>
 
               {/* 약관 동의 */}
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
-                  <Controller
-                    name="agreeToTerms"
-                    control={control}
-                    rules={{ required: "이용약관에 동의해주세요" }}
-                    render={({ field }) => (
-                        <Checkbox
-                            id="agreeToTerms"
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                        />
-                    )}
+                  <Checkbox
+                    id="agreeToTerms"
+                    {...register("agreeToTerms", {
+                      required: "이용약관에 동의해주세요"
+                    })}
                   />
                   <Label htmlFor="agreeToTerms" className="text-sm">
                     <span className="text-destructive">*</span> 이용약관 및 개인정보처리방침에 동의합니다
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="agreeToMarketing"
+                    {...register("agreeToMarketing")}
+                  />
+                  <Label htmlFor="agreeToMarketing" className="text-sm text-muted-foreground">
+                    마케팅 정보 수신에 동의합니다 (선택)
                   </Label>
                 </div>
                 {errors.agreeToTerms && (
@@ -408,11 +302,7 @@ export function SignupPage({ onBack, onSignupSuccess }: SignupPageProps) {
                 )}
               </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading || !isFormValid}
-              >
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "가입 중..." : "회원가입"}
               </Button>
             </form>

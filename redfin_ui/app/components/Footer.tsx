@@ -1,5 +1,3 @@
-// Footer.tsx
-// 사이트 하단에 표시되는 공통 푸터 컴포넌트
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
@@ -7,14 +5,6 @@ import { Github, Twitter, Mail, Heart } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
-
-  // 🔹 네이버 뉴스 카테고리 URL 정의
-  const naverNewsUrls = {
-    politics: "https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1=100",
-    economy: "https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1=101",
-    tech: "https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1=105",
-    sports: "https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1=107",
-  };
 
   return (
     <footer className="bg-card border-t mt-auto">
@@ -50,12 +40,12 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/search" className="text-muted-foreground hover:text-foreground">
-                  뉴스 검색
+                <Link href="/news" className="text-muted-foreground hover:text-foreground">
+                  전체 뉴스
                 </Link>
               </li>
               <li>
-                <Link href="/categories" className="text-muted-foreground hover:text-foreground">
+                <Link href="/explore" className="text-muted-foreground hover:text-foreground">
                   카테고리
                 </Link>
               </li>
@@ -67,14 +57,14 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* 🔹 카테고리 링크 수정 */}
+          {/* Categories */}
           <div className="space-y-4">
             <h4>카테고리</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href={naverNewsUrls.politics} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">정치</a></li>
-              <li><a href={naverNewsUrls.economy} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">경제</a></li>
-              <li><a href={naverNewsUrls.tech} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">기술</a></li>
-              <li><a href={naverNewsUrls.sports} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">스포츠</a></li>
+              <li><Link href="/category/politics">정치</Link></li>
+              <li><Link href="/category/economy">경제</Link></li>
+              <li><Link href="/category/tech">기술</Link></li>
+              <li><Link href="/category/sports">스포츠</Link></li>
             </ul>
           </div>
 
@@ -82,6 +72,8 @@ export function Footer() {
           <div className="space-y-4">
             <h4>지원</h4>
             <ul className="space-y-2 text-sm">
+              <li><Link href="/help">도움말</Link></li>
+              <li><Link href="/contact">문의하기</Link></li>
               <li><Link href="/privacy">개인정보처리방침</Link></li>
               <li><Link href="/terms">이용약관</Link></li>
             </ul>
